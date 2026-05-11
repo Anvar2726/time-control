@@ -1,0 +1,241 @@
+@use "../../consts/colors/style.scss" as *;
+
+.stop-watch {
+  &__card {
+    width: min(960px, 100%);
+    margin: 32px auto;
+    padding: 28px;
+    border: 1px solid $border;
+    border-radius: 18px;
+    background:
+      radial-gradient(circle at 12% 28%, $accent-glow, transparent 20%),
+      linear-gradient(145deg, $bg-surface, $bg-elevated);
+    color: $text-primary;
+    font-family: "DM Sans", sans-serif;
+    box-shadow: 0 22px 70px rgba(0, 0, 0, 0.28);
+    overflow: hidden;
+  }
+
+  &__wrapper {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 1px minmax(280px, 0.72fr);
+    gap: 28px;
+    align-items: stretch;
+  }
+
+  &__timer,
+  &__laps {
+    min-width: 0;
+  }
+
+  &__timer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 24px;
+    min-height: 320px;
+  }
+
+  &__eyebrow {
+    width: fit-content;
+    padding: 7px 11px;
+    border: 1px solid rgba(79, 140, 255, 0.22);
+    border-radius: 8px;
+    background: $accent-soft;
+    color: $accent;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  &__time {
+    position: relative;
+    width: fit-content;
+    margin: 0;
+    color: $text-primary;
+    font-family: "Space Mono", monospace;
+    font-size: clamp(42px, 7vw, 86px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 28px rgba(79, 140, 255, 0.16);
+
+  }
+
+  &__btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  &__btn {
+    min-width: 88px;
+    min-height: 42px;
+    padding: 0 18px;
+    border: 1px solid $border;
+    border-radius: 8px;
+    background: $bg-elevated;
+    color: $text-primary;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform $transition, border-color $transition, background $transition,
+      color $transition, opacity $transition;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      border-color: rgba(79, 140, 255, 0.42);
+      background: rgba(79, 140, 255, 0.1);
+    }
+
+    &:focus-visible {
+      outline: 0;
+      box-shadow: 0 0 0 4px $accent-glow;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.42;
+    }
+
+    &--primary {
+      border-color: transparent;
+      background: $accent;
+      color: white;
+      box-shadow: 0 14px 30px $accent-glow;
+    }
+
+    &--danger {
+      border-color: rgba(255, 120, 120, 0.18);
+      background: rgba(255, 120, 120, 0.1);
+      color: #ff8d8d;
+    }
+
+    &--ghost {
+      color: $accent;
+    }
+  }
+
+  &__divider {
+    width: 1px;
+    min-height: 320px;
+    background: linear-gradient(180deg, transparent, $border 18%, $border 82%, transparent);
+  }
+
+  &__laps {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 4px 0;
+  }
+
+  &__laps-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+
+    h2 {
+      margin: 0;
+      color: $text-primary;
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    span {
+      min-width: 34px;
+      padding: 5px 9px;
+      border: 1px solid $border;
+      border-radius: 7px;
+      background: $bg-surface;
+      color: $accent;
+      font-family: "Space Mono", monospace;
+      font-size: 12px;
+      text-align: center;
+    }
+  }
+
+  &__laps ul {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 270px;
+    margin: 0;
+    padding: 0 4px 0 0;
+    list-style: none;
+    overflow: auto;
+  }
+
+  &__laps li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 13px 14px;
+    border: 1px solid $border;
+    border-radius: 10px;
+    background: rgba(13, 15, 20, 0.46);
+
+    span {
+      color: $text-muted;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    strong {
+      color: $text-primary;
+      font-family: "Space Mono", monospace;
+      font-size: 15px;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
+  &__empty {
+    display: grid;
+    min-height: 220px;
+    place-items: center;
+    border: 1px dashed $border;
+    border-radius: 12px;
+    background: rgba(13, 15, 20, 0.32);
+    color: $text-muted;
+    font-size: 14px;
+  }
+}
+
+
+
+@media (max-width: 760px) {
+  .stop-watch {
+    &__card {
+      margin: 20px auto;
+      padding: 22px;
+      border-radius: 14px;
+    }
+
+    &__wrapper {
+      grid-template-columns: 1fr;
+      gap: 22px;
+    }
+
+    &__timer {
+      min-height: auto;
+    }
+
+    &__divider {
+      width: 100%;
+      min-height: 1px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, $border 18%, $border 82%, transparent);
+    }
+
+    &__btn {
+      flex: 1 1 120px;
+    }
+
+    &__laps ul {
+      max-height: 240px;
+    }
+  }
+}

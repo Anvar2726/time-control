@@ -1,0 +1,268 @@
+@use "../../../consts/colors/style.scss"as *;
+
+.tz-card {
+  position: relative;
+  width: 100%;
+  padding: 28px 28px 22px;
+  border: 1px solid $border;
+  border-radius: 18px;
+  background: $bg-surface;
+  font-family: 'DM Sans', sans-serif;
+  overflow: hidden;
+  align-self: start;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(ellipse 60% 40% at 20% 30%, $accent-glow, transparent 70%);
+    pointer-events: none;
+  }
+
+  &__bar {
+    position: absolute;
+    top: 0;
+    left: 28px;
+    right: 28px;
+    height: 2px;
+    background: linear-gradient(90deg, $accent, rgba(79, 140, 255, 0.2));
+    border-radius: 0 0 4px 4px;
+  }
+}
+
+.tz-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.tz-card__header-main {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tz-card__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: $accent-soft;
+  border: 1px solid rgba(79, 140, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $accent;
+  flex-shrink: 0;
+
+  svg {
+    width: 17px;
+    height: 17px;
+  }
+}
+
+.tz-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.tz-card__region {
+  font-size: 12px;
+  font-weight: 500;
+  color: $accent;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.tz-card__dot {
+  color: $text-dim;
+  font-size: 12px;
+}
+
+.tz-card__offset {
+  padding: 2px 7px;
+  border: 1px solid $border;
+  border-radius: 5px;
+  background: $bg-elevated;
+  color: $text-muted;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.tz-card__remove {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 120, 120, 0.14);
+  border-radius: 12px;
+  background: rgba(255, 120, 120, 0.06);
+  color: #ff8d8d;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform $transition, border-color $transition, background $transition;
+
+  &:hover {
+    transform: translateY(-1px);
+    border-color: rgba(255, 120, 120, 0.28);
+    background: rgba(255, 120, 120, 0.1);
+  }
+
+  &:focus-visible {
+    outline: 0;
+    box-shadow: 0 0 0 4px rgba(255, 120, 120, 0.12);
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.tz-card__clock {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.tz-card__time {
+  color: $text-primary;
+  font-family: 'Space Mono', monospace;
+  font-size: 46px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.tz-card__divider {
+  height: 1px;
+  margin-bottom: 18px;
+  background: $border;
+}
+
+.tz-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.tz-card__info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tz-card__label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: $text-muted;
+  font-size: 12.5px;
+  flex-shrink: 0;
+
+  svg {
+    opacity: 0.6;
+  }
+}
+
+.tz-card__value {
+  color: $text-primary;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: right;
+
+  &--accent {
+    color: $accent;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+  }
+}
+
+.tz-card__day-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid $border;
+  border-radius: 10px;
+  background: $bg-elevated;
+}
+
+.tz-card__progress-label {
+  color: $text-dim;
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tz-card__progress-track {
+  flex: 1;
+  height: 4px;
+  background: $border;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.tz-card__progress-fill {
+  min-width: 4px;
+  height: 100%;
+  background: linear-gradient(90deg, $accent, #82b4ff);
+  border-radius: 2px;
+  transition: width 1s linear;
+}
+
+.tz-card__progress-pct {
+  min-width: 30px;
+  color: $text-muted;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .tz-card {
+    padding: 22px 18px 18px;
+  }
+
+  .tz-card__bar {
+    left: 18px;
+    right: 18px;
+  }
+
+  .tz-card__meta,
+  .tz-card__info-row,
+  .tz-card__day-progress {
+    flex-wrap: wrap;
+  }
+
+  .tz-card__header {
+    align-items: flex-start;
+  }
+
+  .tz-card__header-main {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .tz-card__time {
+    font-size: 38px;
+  }
+
+  .tz-card__value {
+    text-align: left;
+  }
+}

@@ -1,0 +1,552 @@
+@use "../../consts/colors/style.scss" as *;
+
+.planner {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) 1fr;
+  gap: 20px;
+  min-height: calc(100vh - 116px);
+
+  button,
+  input {
+    font: inherit;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  &__calendar-panel,
+  &__task-panel,
+  &__summary,
+  &__task-item,
+  &__empty {
+    background: $bg-surface;
+    border: 1px solid $border;
+    border-radius: 8px;
+  }
+
+  &__calendar-panel,
+  &__task-panel {
+    padding: 20px;
+  }
+
+  &__calendar-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-height: 520px;
+  }
+
+  &__header,
+  &__section-head,
+  &__task-item,
+  &__task-actions,
+  &__section-actions {
+    display: flex;
+    align-items: center;
+  }
+
+  &__header,
+  &__section-head,
+  &__task-item {
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  &__header span,
+  &__section-head span,
+  &__summary span,
+  &__form label span {
+    display: block;
+    color: $text-muted;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  &__header h2,
+  &__section-head h2 {
+    color: $text-primary;
+    font-size: 20px;
+    margin-top: 3px;
+  }
+
+  &__section-head p {
+    margin-top: 4px;
+    color: $text-muted;
+    font-family: "Space Mono", monospace;
+    font-size: 12px;
+  }
+
+  &__calendar {
+    width: 100%;
+    background: $bg-elevated;
+    border: 1px solid $border;
+    border-radius: 8px;
+    padding: 12px;
+    color: $text-primary;
+    font-family: inherit;
+    line-height: 1.2;
+
+    &.react-calendar {
+      background: $bg-elevated;
+      border-color: $border;
+    }
+
+    .react-calendar__viewContainer {
+      background: transparent;
+    }
+
+    button {
+      min-height: 38px;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      color: $text-primary;
+      transition: background $transition, color $transition, box-shadow $transition;
+
+      &:enabled:hover,
+      &:enabled:focus {
+        background: $accent-soft;
+        color: $accent;
+      }
+
+      &:disabled {
+        color: $text-dim;
+        background: transparent;
+        cursor: not-allowed;
+      }
+    }
+
+    .react-calendar__navigation {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+
+      button {
+        border: 1px solid $border;
+        background: $bg-surface;
+        color: $text-primary;
+        font-weight: 700;
+      }
+
+      .react-calendar__navigation__label {
+        flex-grow: 1 !important;
+        font-family: "Space Mono", monospace;
+        font-size: 13px;
+      }
+    }
+
+    .react-calendar__month-view__weekdays {
+      color: $text-muted;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-align: center;
+
+      abbr {
+        text-decoration: none;
+      }
+    }
+
+    .react-calendar__month-view__days,
+    .react-calendar__year-view__months,
+    .react-calendar__decade-view__years,
+    .react-calendar__century-view__decades {
+      display: grid !important;
+      gap: 6px;
+    }
+
+    .react-calendar__month-view__days {
+      grid-template-columns: repeat(7, 1fr);
+    }
+
+    .react-calendar__year-view__months,
+    .react-calendar__decade-view__years,
+    .react-calendar__century-view__decades {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .react-calendar__tile {
+      max-width: none !important;
+      min-width: 0;
+      padding: 0 4px;
+      color: $text-primary;
+      background: $bg-surface;
+      border: 1px solid transparent;
+    }
+
+    .react-calendar__month-view__days .react-calendar__tile {
+      aspect-ratio: 1;
+    }
+
+    .react-calendar__month-view__days__day--neighboringMonth {
+      color: $text-dim;
+    }
+
+    .react-calendar__tile--hasActive {
+      background: $accent-soft;
+      color: $accent;
+    }
+
+    .react-calendar__tile--now {
+      box-shadow: inset 0 0 0 1px $accent;
+      background: $accent-soft;
+      color: $accent;
+    }
+
+    .react-calendar__tile--active {
+      background: $accent;
+      color: white;
+      box-shadow: 0 0 0 3px $accent-glow;
+    }
+  }
+
+  &__summary {
+    padding: 16px;
+    display: grid;
+    gap: 6px;
+
+    strong {
+      color: $text-primary;
+      font-size: 18px;
+    }
+
+    p {
+      color: $text-muted;
+      font-size: 13px;
+    }
+  }
+
+  &__date-button,
+  &__modal-head button {
+    min-height: 36px;
+    border: 1px solid $border;
+    border-radius: 8px;
+    background: $bg-elevated;
+    color: $text-primary;
+    padding: 0 12px;
+    transition: border-color $transition, color $transition, background $transition;
+
+    &:hover {
+      border-color: $accent;
+      color: $accent;
+      background: $accent-soft;
+    }
+  }
+
+  &__section-actions {
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  &__daily-list {
+    display: grid;
+    gap: 10px;
+    overflow-y: auto;
+    padding-right: 2px;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: $border;
+      border-radius: 999px;
+    }
+  }
+
+  &__daily-item {
+    display: grid;
+    gap: 6px;
+    padding: 12px;
+    border: 1px solid $border;
+    border-radius: 8px;
+    background: $bg-elevated;
+
+    span {
+      width: fit-content;
+      border: 1px solid $border;
+      border-radius: 999px;
+      padding: 4px 8px;
+      color: $accent;
+      background: $accent-soft;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    h3 {
+      color: $text-primary;
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__daily-item--done {
+    opacity: 0.75;
+
+    span {
+      color: $text-muted;
+      background: $bg-surface;
+    }
+
+    h3 {
+      color: $text-muted;
+      text-decoration: line-through;
+    }
+  }
+
+  &__task-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  &__form {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 12px;
+    padding: 16px;
+    background: $bg-elevated;
+    border: 1px solid $border;
+    border-radius: 8px;
+
+    label {
+      display: grid;
+      gap: 8px;
+    }
+
+    input {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid $border;
+      border-radius: 8px;
+      background: $bg-surface;
+      color: $text-primary;
+      outline: 0;
+      padding: 0 12px;
+
+      &::placeholder {
+        color: $text-dim;
+      }
+
+      &:focus {
+        border-color: $accent;
+        box-shadow: 0 0 0 3px $accent-soft;
+      }
+    }
+
+    button {
+      min-height: 42px;
+      border: 1px solid $accent;
+      border-radius: 8px;
+      background: $accent;
+      color: white;
+      padding: 0 16px;
+      transition: transform $transition, box-shadow $transition;
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 26px $accent-glow;
+      }
+    }
+  }
+
+  &__section-head {
+    strong {
+      min-width: 36px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border: 1px solid $border;
+      border-radius: 999px;
+      background: $bg-elevated;
+      color: $accent;
+      font-family: "Space Mono", monospace;
+      font-size: 13px;
+    }
+  }
+
+  &__section-head--done {
+    padding-top: 10px;
+    border-top: 1px solid $border;
+  }
+
+  &__task-list,
+  &__done-list {
+    display: grid;
+    gap: 10px;
+  }
+
+  &__task-item {
+    padding: 14px;
+    background: $bg-elevated;
+  }
+
+  &__task-content {
+    min-width: 0;
+
+    h3 {
+      color: $text-primary;
+      font-size: 16px;
+      overflow-wrap: anywhere;
+    }
+
+    p {
+      margin-top: 4px;
+      color: $text-muted;
+      font-family: "Space Mono", monospace;
+      font-size: 12px;
+    }
+  }
+
+  &__task-actions {
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  &__task-actions button,
+  &__task-delete {
+    min-height: 34px;
+    border: 1px solid $border;
+    border-radius: 7px;
+    background: $bg-surface;
+    color: $text-muted;
+    padding: 0 11px;
+    transition: border-color $transition, color $transition, background $transition;
+
+    &:hover {
+      border-color: $accent;
+      color: $accent;
+      background: $accent-soft;
+    }
+  }
+
+  &__task-delete {
+    color: #ff7a90;
+
+    &:hover {
+      border-color: #ff7a90;
+      color: #ff9bad;
+      background: rgba(255, 122, 144, 0.08);
+    }
+  }
+
+  &__task-item--done {
+    cursor: pointer;
+    opacity: 0.78;
+
+    h3 {
+      color: $text-muted;
+      text-decoration: line-through;
+    }
+  }
+
+  &__empty {
+    border-style: dashed;
+    color: $text-muted;
+    padding: 22px 14px;
+    text-align: center;
+  }
+
+  &__modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    display: grid;
+    place-items: center;
+    padding: 18px;
+    background: rgba(0, 0, 0, 0.68);
+  }
+
+  &__modal {
+    width: min(100%, 430px);
+    display: grid;
+    gap: 16px;
+    padding: 20px;
+    background: $bg-surface;
+    border: 1px solid $border;
+    border-radius: 8px;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.44);
+  }
+
+  &__modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+
+    span {
+      display: block;
+      color: $text-muted;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    h2 {
+      color: $text-primary;
+      font-size: 20px;
+      margin-top: 3px;
+    }
+
+    button {
+      width: 36px;
+      padding: 0;
+      font-size: 18px;
+      line-height: 1;
+    }
+  }
+}
+
+@media (max-width: 980px) {
+  .planner {
+    grid-template-columns: 1fr;
+
+    &__calendar-panel {
+      min-height: auto;
+    }
+  }
+}
+
+@media (max-width: 620px) {
+  .planner {
+    min-height: auto;
+
+    &__calendar-panel,
+    &__task-panel {
+      padding: 14px;
+    }
+
+    &__form,
+    &__task-item {
+      grid-template-columns: 1fr;
+    }
+
+    &__form button,
+    &__task-actions,
+    &__task-delete,
+    &__section-actions,
+    &__date-button {
+      width: 100%;
+    }
+
+    &__section-head {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    &__task-item {
+      align-items: stretch;
+      flex-direction: column;
+    }
+  }
+}

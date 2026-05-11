@@ -1,0 +1,269 @@
+@use "../../consts/colors/style.scss" as *;
+
+.pomodoro {
+  display: grid;
+  grid-template-columns: minmax(240px, 320px) 1fr;
+  gap: 20px;
+  min-height: calc(100vh - 116px);
+
+  button,
+  input {
+    font: inherit;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  &__settings,
+  &__panel,
+  &__form,
+  &__count {
+    background: $bg-surface;
+    border: 1px solid $border;
+    border-radius: 8px;
+  }
+
+  &__settings,
+  &__panel {
+    padding: 20px;
+  }
+
+  &__settings {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-height: 420px;
+  }
+
+  &__section-head,
+  &__status,
+  &__controls {
+    display: flex;
+    align-items: center;
+  }
+
+  &__section-head,
+  &__status {
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  &__section-head span,
+  &__status span,
+  &__form label span,
+  &__count span {
+    display: block;
+    color: $text-muted;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  &__section-head h2 {
+    color: $text-primary;
+    font-size: 20px;
+    margin-top: 3px;
+  }
+
+  &__form {
+    display: grid;
+    gap: 14px;
+    padding: 16px;
+    background: $bg-elevated;
+
+    label {
+      display: grid;
+      gap: 8px;
+    }
+
+    input {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid $border;
+      border-radius: 8px;
+      background: $bg-surface;
+      color: $text-primary;
+      outline: 0;
+      padding: 0 12px;
+
+      &:focus {
+        border-color: $accent;
+        box-shadow: 0 0 0 3px $accent-soft;
+      }
+    }
+
+    button {
+      min-height: 42px;
+      border: 1px solid $accent;
+      border-radius: 8px;
+      background: $accent;
+      color: white;
+      transition: transform $transition, box-shadow $transition;
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 26px $accent-glow;
+      }
+    }
+  }
+
+  &__panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  &__tabs {
+    width: min(100%, 680px);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  &__tab {
+    min-height: 66px;
+    display: grid;
+    gap: 5px;
+    border: 1px solid $border;
+    border-radius: 8px;
+    background: $bg-elevated;
+    color: $text-muted;
+    padding: 10px;
+    transition: border-color $transition, background $transition, color $transition;
+
+    span {
+      color: inherit;
+      font-size: 13px;
+    }
+
+    strong {
+      color: $text-primary;
+      font-family: "Space Mono", monospace;
+      font-size: 18px;
+    }
+
+    &:hover,
+    &.active {
+      border-color: $accent;
+      background: $accent-soft;
+      color: $accent;
+    }
+  }
+
+  &__status {
+    width: min(100%, 520px);
+
+    strong {
+      color: $text-primary;
+      font-size: 13px;
+      border: 1px solid $border;
+      border-radius: 999px;
+      padding: 7px 12px;
+      background: $bg-elevated;
+    }
+  }
+
+  &__display {
+    width: min(100%, 560px);
+    min-height: 170px;
+    display: grid;
+    place-items: center;
+    border: 1px solid $border;
+    border-radius: 8px;
+    background: $bg-elevated;
+    color: $text-primary;
+    font-family: "Space Mono", monospace;
+    font-size: clamp(52px, 9vw, 96px);
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+
+  &__controls {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  &__btn {
+    min-height: 40px;
+    border: 1px solid $border;
+    border-radius: 8px;
+    background: $bg-elevated;
+    color: $text-primary;
+    padding: 0 18px;
+    transition: transform $transition, border-color $transition, color $transition, background $transition;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-1px);
+      border-color: $accent;
+      color: $accent;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      color: $text-dim;
+      opacity: 0.65;
+    }
+  }
+
+  &__btn--primary {
+    background: $accent;
+    border-color: $accent;
+    color: white;
+  }
+
+  &__btn--ghost {
+    background: $accent-soft;
+    color: $accent;
+  }
+
+  &__count {
+    width: min(100%, 320px);
+    display: grid;
+    gap: 8px;
+    padding: 16px;
+    text-align: center;
+
+    strong {
+      color: $accent;
+      font-family: "Space Mono", monospace;
+      font-size: 34px;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .pomodoro {
+    grid-template-columns: 1fr;
+
+    &__settings {
+      min-height: auto;
+    }
+  }
+}
+
+@media (max-width: 560px) {
+  .pomodoro {
+    min-height: auto;
+
+    &__settings,
+    &__panel {
+      padding: 14px;
+    }
+
+    &__tabs {
+      grid-template-columns: 1fr;
+    }
+
+    &__display {
+      min-height: 130px;
+    }
+
+    &__btn {
+      width: 100%;
+    }
+  }
+}

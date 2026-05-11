@@ -1,0 +1,359 @@
+@use "../../consts/colors/style.scss" as *;
+
+.timer {
+  display: grid;
+  grid-template-columns: minmax(240px, 300px) 1fr;
+  gap: 20px;
+  min-height: calc(100vh - 116px);
+
+  button,
+  input {
+    font: inherit;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  &__presets,
+  &__panel,
+  &__modal {
+    background: $bg-surface;
+    border: 1px solid $border;
+    border-radius: 8px;
+  }
+
+  &__presets {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 520px;
+  }
+
+  &__section-head,
+  &__status,
+  &__modal-head,
+  &__preset-actions,
+  &__controls,
+  &__durations {
+    display: flex;
+    align-items: center;
+  }
+
+  &__section-head,
+  &__status,
+  &__modal-head {
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  &__section-head span,
+  &__status span,
+  label span {
+    display: block;
+    color: $text-muted;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  &__section-head h2,
+  &__modal-head h2 {
+    color: $text-primary;
+    font-size: 20px;
+    margin-top: 3px;
+  }
+
+  &__icon-btn,
+  &__modal-head button {
+    width: 34px;
+    height: 34px;
+    border: 1px solid $border;
+    border-radius: 8px;
+    background: $bg-elevated;
+    color: $text-primary;
+    font-size: 20px;
+    transition: border-color $transition, color $transition, background $transition;
+
+    &:hover {
+      border-color: $accent;
+      color: $accent;
+      background: $accent-soft;
+    }
+  }
+
+  &__preset-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+  }
+
+  &__preset {
+    border: 1px solid $border;
+    border-radius: 8px;
+    background: $bg-elevated;
+    overflow: hidden;
+  }
+
+  &__preset-main {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    color: $text-primary;
+    display: grid;
+    gap: 6px;
+    text-align: left;
+    padding: 14px;
+
+    strong {
+      font-size: 15px;
+      overflow-wrap: anywhere;
+    }
+
+    span {
+      color: $accent;
+      font-family: "Space Mono", monospace;
+      font-size: 18px;
+    }
+  }
+
+  &__preset-actions {
+    gap: 8px;
+    padding: 0 10px 10px;
+
+    button {
+      flex: 1;
+      border: 1px solid $border;
+      border-radius: 7px;
+      background: $bg-surface;
+      color: $text-muted;
+      padding: 7px 8px;
+      transition: color $transition, border-color $transition;
+
+      &:hover {
+        border-color: $accent;
+        color: $text-primary;
+      }
+    }
+  }
+
+  &__empty {
+    border: 1px dashed $border;
+    border-radius: 8px;
+    color: $text-muted;
+    padding: 24px 14px;
+    text-align: center;
+  }
+
+  &__panel {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    padding: 30px;
+  }
+
+  &__status {
+    width: min(100%, 520px);
+
+    strong {
+      color: $text-primary;
+      font-size: 13px;
+      border: 1px solid $border;
+      border-radius: 999px;
+      padding: 7px 12px;
+      background: $bg-elevated;
+    }
+  }
+
+  &__display {
+    width: min(100%, 560px);
+    min-height: 170px;
+    border: 1px solid $border;
+    border-radius: 8px;
+    background: $bg-elevated;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $text-primary;
+    font-family: "Space Mono", monospace;
+    font-size: clamp(42px, 8vw, 86px);
+    font-weight: 700;
+    letter-spacing: 0;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+
+    small {
+      color: $text-muted;
+      margin: 0 4px;
+      font-size: 0.8em;
+    }
+  }
+
+  &__controls,
+  &__durations {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  &__btn,
+  &__durations button {
+    border: 1px solid $border;
+    border-radius: 8px;
+    background: $bg-elevated;
+    color: $text-primary;
+    min-height: 40px;
+    padding: 0 16px;
+    transition: transform $transition, border-color $transition, background $transition, color $transition;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-1px);
+      border-color: $accent;
+      color: $accent;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      color: $text-dim;
+      opacity: 0.65;
+    }
+  }
+
+  &__btn--primary {
+    background: $accent;
+    border-color: $accent;
+    color: white;
+  }
+
+  &__btn--danger {
+    color: #ff7a90;
+  }
+
+  &__btn--ghost {
+    background: $accent-soft;
+    color: $accent;
+  }
+
+  &__durations {
+    width: min(100%, 640px);
+
+    button {
+      min-width: 86px;
+      color: $text-muted;
+    }
+  }
+
+  &__modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    background: rgba(0, 0, 0, 0.62);
+    display: grid;
+    place-items: center;
+    padding: 18px;
+  }
+
+  &__modal {
+    width: min(100%, 520px);
+    padding: 20px;
+    display: grid;
+    gap: 18px;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
+  }
+
+  &__fields {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  &__name-field,
+  &__fields label {
+    display: grid;
+    gap: 8px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    border: 1px solid $border;
+    border-radius: 8px;
+    background: $bg-elevated;
+    color: $text-primary;
+    min-height: 42px;
+    padding: 0 12px;
+    outline: 0;
+
+    &:focus {
+      border-color: $accent;
+      box-shadow: 0 0 0 3px $accent-soft;
+    }
+  }
+
+  &__sound-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  &__sound {
+    position: relative;
+
+    input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    span {
+      display: block;
+      border: 1px solid $border;
+      border-radius: 8px;
+      background: $bg-elevated;
+      color: $text-muted;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color $transition, color $transition, background $transition;
+    }
+
+    input:checked + span {
+      border-color: $accent;
+      background: $accent-soft;
+      color: $accent;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .timer {
+    grid-template-columns: 1fr;
+
+    &__presets {
+      min-height: auto;
+    }
+  }
+}
+
+@media (max-width: 560px) {
+  .timer {
+    min-height: auto;
+
+    &__panel {
+      padding: 22px 14px;
+    }
+
+    &__fields,
+    &__sound-grid {
+      grid-template-columns: 1fr;
+    }
+
+    &__display {
+      min-height: 130px;
+    }
+  }
+}

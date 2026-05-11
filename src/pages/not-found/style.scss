@@ -1,0 +1,150 @@
+@use "../../consts/colors/style.scss" as *;
+
+.notfound {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Sans', sans-serif;
+  padding: 20px;
+
+  background: linear-gradient(
+    270deg,
+    #0d0f14,
+    #13161d,
+    #1a1e28,
+    #0d0f14
+  );
+  background-size: 600% 600%;
+  animation: gradientMove 12s ease infinite;
+
+  &__content {
+    text-align: center;
+    background: rgba(19, 22, 29, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid $border;
+    padding: 40px 32px;
+    border-radius: 20px;
+    max-width: 480px;
+    width: 100%;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  }
+
+  &__code {
+    font-family: 'Space Mono', monospace;
+    font-size: 100px;
+    color: $accent;
+    position: relative;
+  }
+
+  /* ✨ GLITCH EFFECT */
+  .glitch {
+    position: relative;
+    display: inline-block;
+    animation: glitch-skew 1s infinite linear alternate-reverse;
+  }
+
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .glitch::before {
+    top: -2px;
+    color: #ff4f8c;
+    animation: glitchTop 1.2s infinite linear;
+  }
+
+  .glitch::after {
+    top: 2px;
+    color: #4fffda;
+    animation: glitchBottom 1.5s infinite linear;
+  }
+
+  &__title {
+    font-size: 26px;
+    color: $text-primary;
+    margin-top: 10px;
+  }
+
+  &__desc {
+    font-size: 15px;
+    color: $text-muted;
+    margin: 15px 0 30px;
+    line-height: 1.5;
+  }
+
+  &__btn {
+    background: $accent;
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: $transition;
+    box-shadow: 0 10px 25px $accent-glow;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: scale(0.96);
+    }
+  }
+}
+
+/* 🎞 Gradient animation */
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ⚡ Glitch animations */
+@keyframes glitchTop {
+  0% { clip-path: inset(0 0 85% 0); }
+  50% { clip-path: inset(0 0 50% 0); }
+  100% { clip-path: inset(0 0 80% 0); }
+}
+
+@keyframes glitchBottom {
+  0% { clip-path: inset(85% 0 0 0); }
+  50% { clip-path: inset(50% 0 0 0); }
+  100% { clip-path: inset(80% 0 0 0); }
+}
+
+@keyframes glitch-skew {
+  0% { transform: skew(0deg); }
+  20% { transform: skew(2deg); }
+  40% { transform: skew(-2deg); }
+  60% { transform: skew(1deg); }
+  80% { transform: skew(-1deg); }
+  100% { transform: skew(0deg); }
+}
+
+/* 📱 Responsive */
+@media (max-width: 600px) {
+  .notfound {
+    &__content {
+      padding: 30px 20px;
+    }
+
+    &__code {
+      font-size: 70px;
+    }
+
+    &__title {
+      font-size: 22px;
+    }
+
+    &__btn {
+      width: 100%;
+    }
+  }
+}
