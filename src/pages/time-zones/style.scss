@@ -5,8 +5,9 @@
   padding: 28px;
   background:
     radial-gradient(circle at top left, $accent-soft, transparent 32%),
-    linear-gradient(180deg, rgba(26, 30, 40, 0.72), rgba(13, 15, 20, 0.96));
-  border-radius: 28px;
+    $bg-base;
+  border: 1px solid $border;
+  border-radius: 8px;
 }
 
 .time-zone-page__hero {
@@ -21,9 +22,9 @@
   align-items: center;
   padding: 6px 12px;
   margin-bottom: 14px;
-  border: 1px solid rgba(79, 140, 255, 0.2);
+  border: 1px solid $border;
   border-radius: 999px;
-  background: rgba(79, 140, 255, 0.08);
+  background: $accent-soft;
   color: $accent;
   font:
     700 11px/1 "Space Mono",
@@ -38,7 +39,7 @@
   font:
     700 clamp(32px, 5vw, 52px) / 1.02 "Space Mono",
     monospace;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
   // width: 20ch;
 }
 

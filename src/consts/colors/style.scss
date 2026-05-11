@@ -3,15 +3,15 @@ $sidebar-collapsed: 68px;
 $sidebar-expanded: 220px;
 $transition: 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 
-$bg-base:       #0d0f14;
-$bg-surface:    #13161d;
-$bg-elevated:   #1a1e28;
-$border:        #242836;
+$bg-base:       var(--bg-base);
+$bg-surface:    var(--bg-surface);
+$bg-elevated:   var(--bg-elevated);
+$border:        var(--border);
 
-$accent:        #4f8cff;
-$accent-glow:   rgba(79, 140, 255, 0.18);
-$accent-soft:   rgba(79, 140, 255, 0.08);
+$accent:        var(--accent);
+$accent-glow:   var(--accent-glow);
+$accent-soft:   var(--accent-soft);
 
-$text-primary:  #e8ecf4;
-$text-muted:    #6b7490;
-$text-dim:      #3d4358;
+$text-primary:  var(--text-primary);
+$text-muted:    var(--text-muted);
+$text-dim:      var(--text-dim);

@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { create } from "zustand";
 
+import alarm2 from "../../assets/sounds/alarm-2.mp3";
+
 export const pomodoroModes = [
   { id: "focus", label: "Focus", durationKey: "focusMinutes" },
   { id: "short", label: "Short break", durationKey: "shortBreakMinutes" },
@@ -20,6 +22,21 @@ const getDurationByMode = (state, mode = state.activeMode) => {
 
 const minutesToSeconds = (minutes) => Math.max(1, parseInt(minutes) || 1) * 60;
 
+let alarmAudio = null;
+
+const stopAlarm = () => {
+  if (!alarmAudio) return;
+  alarmAudio.pause();
+  alarmAudio.currentTime = 0;
+};
+
+const playAlarm = () => {
+  if (typeof Audio === "undefined") return;
+  stopAlarm();
+  alarmAudio = new Audio(alarm2);
+  alarmAudio.play().catch(() => {});
+};
+
 const pomodoroStore = create((set, get) => ({
   ...defaultDurations,
   activeMode: "focus",
@@ -28,6 +45,7 @@ const pomodoroStore = create((set, get) => ({
   pomodoroCount: 0,
   settingsForm: defaultDurations,
   setMode: (mode) => {
+    stopAlarm();
     const state = get();
     const duration = getDurationByMode(state, mode);
     set(() => ({
@@ -37,13 +55,18 @@ const pomodoroStore = create((set, get) => ({
     }));
   },
   start: () => {
+    stopAlarm();
     const { remainingSeconds } = get();
     if (remainingSeconds > 0) {
       set(() => ({ isRunning: true }));
     }
   },
-  pause: () => set(() => ({ isRunning: false })),
+  pause: () => {
+    stopAlarm();
+    set(() => ({ isRunning: false }));
+  },
   reset: () => {
+    stopAlarm();
     const state = get();
     set(() => ({
       remainingSeconds: minutesToSeconds(getDurationByMode(state)),
@@ -61,6 +84,7 @@ const pomodoroStore = create((set, get) => ({
   },
   saveSettings: (event) => {
     event.preventDefault();
+    stopAlarm();
     const { settingsForm, activeMode } = get();
     const nextDurations = {
       focusMinutes: Math.max(1, parseInt(settingsForm.focusMinutes) || 1),
@@ -79,6 +103,7 @@ const pomodoroStore = create((set, get) => ({
     const state = get();
     const isFocus = state.activeMode === "focus";
     const nextCount = isFocus ? state.pomodoroCount + 1 : state.pomodoroCount;
+    playAlarm();
     set(() => ({
       pomodoroCount: nextCount,
       remainingSeconds: minutesToSeconds(getDurationByMode(state)),

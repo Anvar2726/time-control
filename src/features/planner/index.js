@@ -1,13 +1,41 @@
 import { v4 } from "uuid";
 import { create } from "zustand";
 
+const PLANNER_STORAGE_KEY = "time-control-planner-tasks";
+
+const getStoredTasks = () => {
+  if (typeof window === "undefined") return [];
+
+  try {
+    const tasks = JSON.parse(window.localStorage.getItem(PLANNER_STORAGE_KEY) || "[]");
+    if (!Array.isArray(tasks)) return [];
+
+    return tasks.map((task) => ({
+      ...task,
+      date: new Date(task.date),
+    }));
+  } catch {
+    return [];
+  }
+};
+
+const setStoredTasks = (tasks) => {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(PLANNER_STORAGE_KEY, JSON.stringify(tasks));
+};
+
 const plannerStore = create((set, get) => ({
-  tasks: [],
+  tasks: getStoredTasks(),
   calendarValue: new Date(),
   tasksForm: null,
   selectedTask: null,
   setCalendarValue: (value) => set(() => ({ calendarValue: value })),
-  addTask: (task) => set((state) => ({ tasks: [...state.tasks, task] })),
+  addTask: (task) =>
+    set((state) => {
+      const tasks = [...state.tasks, task];
+      setStoredTasks(tasks);
+      return { tasks };
+    }),
   sumbitTask: (e) => {
     const { calendarValue, addTask, selectedTask, tasks, setCalendarValue } = get();
     e.preventDefault();
@@ -26,6 +54,7 @@ const plannerStore = create((set, get) => ({
             }
             return task;
         });
+        setStoredTasks(updatedTasks);
         set(() => ({ tasks: updatedTasks, selectedTask: null }));
     }else{
         addTask(tasksObj);
@@ -42,11 +71,13 @@ const plannerStore = create((set, get) => ({
       }
       return task;
     });
+    setStoredTasks(updatedTasks);
     set(() => ({ tasks: updatedTasks }));
   },
   deleteTask: (id) => {
     const { tasks } = get();
     const filteredTasks = tasks.filter((task) => task.id !== id);
+    setStoredTasks(filteredTasks);
     set(() => ({ tasks: filteredTasks }));
   },
   editTask: (id) => {

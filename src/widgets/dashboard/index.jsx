@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, NavLink } from "react-router-dom";
 import "./style.scss";
 
@@ -143,6 +143,25 @@ const navItems = [
 
 const DashboardPage = () => {
   const [expanded, setExpanded] = useState(false);
+  const [theme, setTheme] = useState(() => {
+    if (typeof window === "undefined") return "dark";
+    return window.localStorage.getItem("time-control-theme") || "dark";
+  });
+  const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    document.body.dataset.theme = theme;
+    window.localStorage.setItem("time-control-theme", theme);
+  }, [theme]);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const toggleTheme = () => {
+    setTheme((currentTheme) => (currentTheme === "dark" ? "light" : "dark"));
+  };
 
   return (
     <div className="dashboard">
@@ -218,12 +237,22 @@ const DashboardPage = () => {
           </div>
           <div className="topbar__right">
             <span className="topbar__badge">
-              {new Date().toLocaleDateString("uz-UZ", {
+              {now.toLocaleDateString("uz-UZ", {
                 weekday: "short",
                 month: "short",
                 day: "numeric",
               })}
             </span>
+            <span className="topbar__badge topbar__badge--time">
+              {now.toLocaleTimeString("uz-UZ", {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+              })}
+            </span>
+            <button className="topbar__theme" type="button" onClick={toggleTheme}>
+              {theme === "dark" ? "Light" : "Dark"}
+            </button>
           </div>
         </header>
 

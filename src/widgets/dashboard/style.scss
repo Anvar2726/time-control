@@ -285,6 +285,29 @@
     color: $text-muted;
     letter-spacing: 0.03em;
   }
+
+  &__badge--time {
+    color: $text-primary;
+  }
+
+  &__theme {
+    min-height: 28px;
+    border: 1px solid $border;
+    border-radius: 20px;
+    background: $accent-soft;
+    color: $accent;
+    padding: 0 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    transition: border-color $transition, background $transition, color $transition;
+
+    &:hover {
+      border-color: $accent;
+      background: $bg-elevated;
+      color: $text-primary;
+    }
+  }
 }
 
 // ─── Main Content ─────────────────────────────────────────────────────────────
