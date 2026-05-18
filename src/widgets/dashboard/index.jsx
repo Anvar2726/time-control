@@ -145,6 +145,7 @@ const DashboardPage = () => {
   const navigationType = useNavigationType();
   const { pathname } = useLocation();
   const sidebarRef = useRef(null);
+  const mainRef = useRef(null);
   const [expanded, setExpanded] = useState(false);
   const [theme, setTheme] = useState(() => {
     if (typeof window === "undefined") return "dark";
@@ -199,13 +200,12 @@ const DashboardPage = () => {
 
 
   useEffect(() => {
-    if (navigationType === "PUSH") {
-      window.scrollTo({
+    const target = mainRef.current || document.documentElement;
+      target.scrollTo({
         top: 0,
         behavior: "smooth",
-      });
-    }
-  }, [pathname, navigationType]);
+    })
+  }, [pathname, ]);
 
   return (
     <div className="dashboard">
@@ -331,7 +331,7 @@ const DashboardPage = () => {
           </div>
         </header>
 
-        <main className="main-content">
+        <main ref={mainRef} className="main-content">
           <Outlet />
         </main>
 
