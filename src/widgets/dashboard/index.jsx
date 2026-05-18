@@ -185,7 +185,7 @@ const DashboardPage = () => {
   };
 
   const handleClickOutside = (event) => {
-    if (sidebarRef.current && sidebarRef.current.contains(event.target)) {
+    if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
       setExpanded(false);
     }    
   }
