@@ -342,9 +342,57 @@
 @media (max-width: 560px) {
   .timer {
     min-height: auto;
+    gap: 12px;
+    font-size: 13px;
+
+    &__presets {
+      gap: 12px;
+      padding: 12px;
+    }
+
+    &__section-head h2,
+    &__modal-head h2 {
+      font-size: 17px;
+    }
+
+    &__icon-btn,
+    &__modal-head button {
+      width: 32px;
+      height: 32px;
+      font-size: 18px;
+    }
+
+    &__preset-main {
+      padding: 12px;
+
+      strong {
+        font-size: 13.5px;
+      }
+
+      span {
+        font-size: 15px;
+      }
+    }
+
+    &__preset-actions button {
+      min-height: 32px;
+      padding: 6px 8px;
+    }
 
     &__panel {
-      padding: 22px 14px;
+      gap: 18px;
+      padding: 18px 12px;
+    }
+
+    &__status {
+      align-items: stretch;
+      flex-direction: column;
+      gap: 8px;
+
+      strong {
+        width: fit-content;
+        font-size: 12px;
+      }
     }
 
     &__fields,
@@ -353,7 +401,36 @@
     }
 
     &__display {
-      min-height: 130px;
+      min-height: 118px;
+      font-size: clamp(36px, 15vw, 54px);
+    }
+
+    &__btn,
+    &__durations button {
+      min-height: 38px;
+      padding: 0 12px;
+    }
+
+    &__controls .timer__btn {
+      flex: 1 1 110px;
+    }
+
+    &__durations button {
+      min-width: 74px;
+      font-size: 12px;
+    }
+
+    &__modal-backdrop {
+      padding: 12px;
+    }
+
+    &__modal {
+      gap: 14px;
+      padding: 16px;
+    }
+
+    input[type="text"] {
+      min-height: 38px;
     }
   }
 }

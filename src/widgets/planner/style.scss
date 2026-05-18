@@ -520,10 +520,64 @@
 @media (max-width: 620px) {
   .planner {
     min-height: auto;
+    gap: 12px;
+    font-size: 13px;
 
     &__calendar-panel,
     &__task-panel {
-      padding: 14px;
+      padding: 12px;
+    }
+
+    &__calendar-panel,
+    &__task-panel {
+      gap: 12px;
+    }
+
+    &__header h2,
+    &__section-head h2,
+    &__modal-head h2 {
+      font-size: 17px;
+    }
+
+    &__calendar {
+      padding: 8px;
+
+      button {
+        min-height: 32px;
+        font-size: 12px;
+      }
+
+      .react-calendar__navigation {
+        gap: 4px;
+        margin-bottom: 8px;
+
+        .react-calendar__navigation__label {
+          font-size: 11px;
+        }
+      }
+
+      .react-calendar__month-view__weekdays {
+        font-size: 9px;
+      }
+
+      .react-calendar__month-view__days,
+      .react-calendar__year-view__months,
+      .react-calendar__decade-view__years,
+      .react-calendar__century-view__decades {
+        gap: 4px;
+      }
+    }
+
+    &__summary {
+      padding: 12px;
+
+      strong {
+        font-size: 15px;
+      }
+
+      p {
+        font-size: 12px;
+      }
     }
 
     &__form,
@@ -547,6 +601,35 @@
     &__task-item {
       align-items: stretch;
       flex-direction: column;
+      padding: 12px;
+      gap: 10px;
+    }
+
+    &__task-content h3 {
+      font-size: 14px;
+    }
+
+    &__form {
+      gap: 10px;
+      padding: 12px;
+
+      input,
+      button {
+        min-height: 38px;
+      }
+    }
+
+    &__daily-item {
+      padding: 10px;
+    }
+
+    &__modal-backdrop {
+      padding: 12px;
+    }
+
+    &__modal {
+      gap: 12px;
+      padding: 16px;
     }
   }
 }

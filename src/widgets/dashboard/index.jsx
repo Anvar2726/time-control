@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, useNavigationType, useLocation } from "react-router-dom";
 import "./style.scss";
 
 const navItems = [
@@ -142,12 +142,26 @@ const navItems = [
 ];
 
 const DashboardPage = () => {
+  const navigationType = useNavigationType();
+  const { pathname } = useLocation();
+
   const [expanded, setExpanded] = useState(false);
   const [theme, setTheme] = useState(() => {
     if (typeof window === "undefined") return "dark";
     return window.localStorage.getItem("time-control-theme") || "dark";
   });
   const [now, setNow] = useState(new Date());
+
+  
+useEffect(() => {
+  if (navigationType === "PUSH") {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+    console.log(pathname, navigationType);
+  }
+}, [pathname, navigationType]);
 
   useEffect(() => {
     document.body.dataset.theme = theme;
@@ -159,12 +173,58 @@ const DashboardPage = () => {
     return () => clearInterval(intervalId);
   }, []);
 
+  useEffect(() => {
+    const closeOnEscape = (event) => {
+      if (event.key === "Escape") {
+        setExpanded(false);
+      }
+    };
+
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, []);
+
   const toggleTheme = () => {
     setTheme((currentTheme) => (currentTheme === "dark" ? "light" : "dark"));
   };
 
+  const closeMobileSidebar = () => {
+    if (window.matchMedia("(max-width: 600px)").matches) {
+      setExpanded(false);
+    }
+  };
+
   return (
     <div className="dashboard">
+      <button
+        className="sidebar__mobile-toggle"
+        onClick={() => setExpanded((v) => !v)}
+        aria-expanded={expanded}
+        aria-label="Toggle sidebar"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          {expanded ? (
+            <>
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </>
+          ) : (
+            <>
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </>
+          )}
+        </svg>
+      </button>
+
       {/* Sidebar */}
       <aside className={`sidebar ${expanded ? "sidebar--expanded" : ""}`}>
         {/* Logo */}
@@ -177,6 +237,7 @@ const DashboardPage = () => {
         <button
           className="sidebar__toggle"
           onClick={() => setExpanded((v) => !v)}
+          aria-expanded={expanded}
           aria-label="Toggle sidebar"
         >
           <svg
@@ -209,6 +270,7 @@ const DashboardPage = () => {
               key={to}
               to={to}
               end={end}
+              onClick={closeMobileSidebar}
               className={({ isActive }) =>
                 `sidebar__link ${isActive ? "sidebar__link--active" : ""}`
               }

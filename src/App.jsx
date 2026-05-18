@@ -9,6 +9,8 @@ import NotFoundPage from "./pages/not-found"
 import DashboardPage from "./widgets/dashboard"
 
 function App() {
+
+  
   return (
     <BrowserRouter>
       <Routes >

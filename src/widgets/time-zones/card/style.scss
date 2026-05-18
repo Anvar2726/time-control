@@ -235,12 +235,13 @@
 
 @media (max-width: 640px) {
   .tz-card {
-    padding: 22px 18px 18px;
+    padding: 16px 12px 14px;
+    border-radius: 10px;
   }
 
   .tz-card__bar {
-    left: 18px;
-    right: 18px;
+    left: 12px;
+    right: 12px;
   }
 
   .tz-card__meta,
@@ -251,6 +252,7 @@
 
   .tz-card__header {
     align-items: flex-start;
+    margin-bottom: 16px;
   }
 
   .tz-card__header-main {
@@ -259,10 +261,30 @@
   }
 
   .tz-card__time {
-    font-size: 38px;
+    font-size: 32px;
+  }
+
+  .tz-card__icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+  }
+
+  .tz-card__clock,
+  .tz-card__info {
+    margin-bottom: 16px;
+  }
+
+  .tz-card__label {
+    font-size: 11.5px;
   }
 
   .tz-card__value {
+    font-size: 12px;
     text-align: left;
+  }
+
+  .tz-card__day-progress {
+    padding: 9px 10px;
   }
 }

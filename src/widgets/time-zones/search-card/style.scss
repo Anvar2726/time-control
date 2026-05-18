@@ -381,10 +381,11 @@
 
 @media (max-width: 640px) {
   .tz-search-card {
-    padding: 22px 18px 18px;
+    padding: 16px 12px 14px;
+    border-radius: 10px;
 
     &__bar {
-      inset-inline: 18px;
+      inset-inline: 12px;
     }
   }
 
@@ -395,8 +396,40 @@
     align-items: stretch;
   }
 
+  .tz-search-card__header {
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .tz-search-card__text {
+    margin-bottom: 14px;
+    font-size: 12.5px;
+  }
+
+  .tz-search-card__title {
+    font-size: 19px;
+  }
+
   .tz-search-card__count {
     align-self: flex-start;
+    min-width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    font-size: 12px;
+  }
+
+  .tz-search-card__trigger {
+    gap: 10px;
+    padding: 14px;
+    border-radius: 10px;
+  }
+
+  .tz-search-card__trigger-label {
+    font-size: 14px;
+  }
+
+  .tz-search-card__trigger-hint {
+    font-size: 11px;
   }
 
   .tz-search-card__modal {
@@ -404,11 +437,39 @@
   }
 
   .tz-search-card__modal-panel {
-    padding: 22px 18px;
+    padding: 16px 12px;
+    border-radius: 12px;
   }
 
   .tz-search-card__close {
     align-self: flex-end;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+  }
+
+  .tz-search-card__field {
+    height: 46px;
+    padding: 0 12px;
+    border-radius: 10px;
+  }
+
+  .tz-search-card__input {
+    font-size: 13px;
+  }
+
+  .tz-search-card__item {
+    gap: 10px;
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  .tz-search-card__city {
+    font-size: 14px;
+  }
+
+  .tz-search-card__zone {
+    font-size: 11px;
   }
 
   .tz-search-card__item-meta {

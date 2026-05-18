@@ -81,17 +81,34 @@
 
 @media (max-width: 640px) {
   .time-zone-page {
-    padding: 18px;
-    border-radius: 20px;
+    padding: 12px;
+    border-radius: 10px;
   }
 
   .time-zone-page__hero {
-    margin-bottom: 22px;
+    margin-bottom: 16px;
     flex-direction: column;
+    gap: 8px;
+  }
+
+  .time-zone-page__eyebrow {
+    padding: 5px 9px;
+    margin-bottom: 10px;
+    font-size: 10px;
+  }
+
+  .time-zone-page__title {
+    font-size: clamp(25px, 10vw, 34px);
   }
 
   .time-zone-page__text {
-    font-size: 15px;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .time-zone-page__layout,
+  .time-zone-page__cards {
+    gap: 12px;
   }
 
   .time-zone-page__cards {
