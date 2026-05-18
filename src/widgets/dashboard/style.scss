@@ -464,17 +464,17 @@
   .topbar {
     min-height: 58px;
     height: auto;
-    padding: 10px 12px 10px 60px;
-    gap: 10px;
+    padding: 10px 12px 10px 55px;
+    gap: 5px;
 
     &__title h1 {
-      font-size: 12px;
+      font-size: 10px;
     }
 
     &__right {
       justify-content: flex-end;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 3px;
     }
 
     &__badge {

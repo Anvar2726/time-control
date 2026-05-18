@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Outlet, NavLink, useNavigationType, useLocation } from "react-router-dom";
 import "./style.scss";
 
@@ -144,24 +144,13 @@ const navItems = [
 const DashboardPage = () => {
   const navigationType = useNavigationType();
   const { pathname } = useLocation();
-
+  const sidebarRef = useRef(null);
   const [expanded, setExpanded] = useState(false);
   const [theme, setTheme] = useState(() => {
     if (typeof window === "undefined") return "dark";
     return window.localStorage.getItem("time-control-theme") || "dark";
   });
   const [now, setNow] = useState(new Date());
-
-  
-useEffect(() => {
-  if (navigationType === "PUSH") {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-    console.log(pathname, navigationType);
-  }
-}, [pathname, navigationType]);
 
   useEffect(() => {
     document.body.dataset.theme = theme;
@@ -189,10 +178,34 @@ useEffect(() => {
   };
 
   const closeMobileSidebar = () => {
-    if (window.matchMedia("(max-width: 600px)").matches) {
+    if (navigationType === "PUSH") {
       setExpanded(false);
     }
   };
+
+  const handleClickOutside = (event) => {
+    if (sidebarRef.current && sidebarRef.current.contains(event.target)) {
+      setExpanded(false);
+    }    
+  }
+
+  useEffect(() => {
+    if (expanded) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [expanded]);
+
+
+  useEffect(() => {
+    if (navigationType === "PUSH") {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  }, [pathname, navigationType]);
 
   return (
     <div className="dashboard">
@@ -226,7 +239,7 @@ useEffect(() => {
       </button>
 
       {/* Sidebar */}
-      <aside className={`sidebar ${expanded ? "sidebar--expanded" : ""}`}>
+      <aside className={`sidebar ${expanded ? "sidebar--expanded" : ""}`} ref={sidebarRef}>
         {/* Logo */}
         <div className="sidebar__brand">
           <span className="sidebar__brand-icon">⏱</span>
@@ -302,7 +315,7 @@ useEffect(() => {
               {now.toLocaleDateString("uz-UZ", {
                 weekday: "short",
                 month: "short",
-                day: "numeric",
+                day: "2-digit",
               })}
             </span>
             <span className="topbar__badge topbar__badge--time">
