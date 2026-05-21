@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Outlet, NavLink, useNavigationType, useLocation } from "react-router-dom";
+import { Outlet, NavLink,  useLocation } from "react-router-dom";
 import "./style.scss";
 
 const navItems = [
@@ -51,7 +51,7 @@ const navItems = [
         </g>
       </svg>
     ),
-    label: "World Time",
+    label: "Age Calculator",
   },
   {
     to: "/pomodoro",
@@ -142,11 +142,12 @@ const navItems = [
 ];
 
 const DashboardPage = () => {
-  const navigationType = useNavigationType();
+  
   const { pathname } = useLocation();
-  const sidebarRef = useRef(null);
+  const navbarRef = useRef(null);
   const mainRef = useRef(null);
   const [expanded, setExpanded] = useState(false);
+  
   const [theme, setTheme] = useState(() => {
     if (typeof window === "undefined") return "dark";
     return window.localStorage.getItem("time-control-theme") || "dark";
@@ -179,15 +180,13 @@ const DashboardPage = () => {
   };
 
   const closeMobileSidebar = () => {
-    if (navigationType === "PUSH") {
-      setExpanded(false);
-    }
+    setExpanded(false);
   };
 
   const handleClickOutside = (event) => {
-    if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
-      setExpanded(false);
-    }    
+    if (navbarRef.current && !navbarRef.current.contains(event.target) ) {
+      setExpanded(false);            
+    }
   }
 
   useEffect(() => {
@@ -209,6 +208,7 @@ const DashboardPage = () => {
 
   return (
     <div className="dashboard">
+      {/* Sidebar */}
       <button
         className="sidebar__mobile-toggle"
         onClick={() => setExpanded((v) => !v)}
@@ -237,9 +237,7 @@ const DashboardPage = () => {
           )}
         </svg>
       </button>
-
-      {/* Sidebar */}
-      <aside className={`sidebar ${expanded ? "sidebar--expanded" : ""}`} ref={sidebarRef}>
+      <aside className={`sidebar ${expanded ? "sidebar--expanded" : ""}`}>
         {/* Logo */}
         <div className="sidebar__brand">
           <span className="sidebar__brand-icon">⏱</span>
@@ -277,7 +275,7 @@ const DashboardPage = () => {
         </button>
 
         {/* Nav */}
-        <nav className="sidebar__nav">
+        <nav className="sidebar__nav" ref={navbarRef}>
           {navItems.map(({ to, end, icon, label }) => (
             <NavLink
               key={to}

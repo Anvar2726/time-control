@@ -440,7 +440,8 @@
     }
 
     &[aria-expanded="true"] {
-      left: calc(min(82vw, #{$sidebar-expanded}) - 50px);
+      // left: calc(min(82vw, #{$sidebar-expanded}) - 50px);
+      z-index: 0;
     }
   }
 
@@ -478,8 +479,7 @@
     }
 
     &__badge {
-      padding: 4px 8px;
-      font-size: 10.5px;
+      display: none;
     }
 
     &__theme {
