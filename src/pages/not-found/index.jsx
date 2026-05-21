@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import "./style.scss";
+import { memo } from "react";
 
-const NotFoundPage = () => {
+const NotFoundPage = memo (() => {
   const navigate = useNavigate();
 
   return (
@@ -23,6 +24,6 @@ const NotFoundPage = () => {
       </div>
     </div>
   );
-};
+});
 
 export default NotFoundPage;

@@ -1,6 +1,6 @@
 import TimerCard from "../../widgets/timer";
 
-const TimerPage = () => {
+const TimerPage =  () => {
   return <TimerCard />;
 };
 

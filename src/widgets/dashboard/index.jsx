@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { Outlet, NavLink,  useLocation } from "react-router-dom";
 import "./style.scss";
 
@@ -141,8 +141,7 @@ const navItems = [
   },
 ];
 
-const DashboardPage = () => {
-  
+const DashboardPage = memo(() => {
   const { pathname } = useLocation();
   const navbarRef = useRef(null);
   const mainRef = useRef(null);
@@ -339,6 +338,6 @@ const DashboardPage = () => {
       </div>
     </div>
   );
-};
+});
 
 export default DashboardPage;

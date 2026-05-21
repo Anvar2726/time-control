@@ -1,3 +1,4 @@
+import { memo } from "react";
 import pomodoroStore, {
   formatPomodoroTime,
   pomodoroModes,
@@ -6,7 +7,7 @@ import pomodoroStore, {
 
 import "./style.scss";
 
-const PomodoroCard = () => {
+const PomodoroCard = memo(() => {
   const {
     activeMode,
     remainingSeconds,
@@ -139,6 +140,6 @@ const PomodoroCard = () => {
       </div>
     </section>
   );
-};
+});
 
 export default PomodoroCard;

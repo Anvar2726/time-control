@@ -1,8 +1,9 @@
+import { memo } from "react";
 import stopWatchStore, { useStopWatchCard } from "../../features/stop-watch";
 
 import "./style.scss";
 
-const StopWatchCard = () => {
+const StopWatchCard =  memo(() => {
   const { start, stop, reset, addLap, laps, isrunning, elapsedTime } = stopWatchStore();
   const { formatTime } = useStopWatchCard();
   const hasStarted = isrunning || elapsedTime > 0 || laps.length > 0;
@@ -74,6 +75,6 @@ const StopWatchCard = () => {
       </div>
     </div>
   );
-};
+});
 
 export default StopWatchCard;

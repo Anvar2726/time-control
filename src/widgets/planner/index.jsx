@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import plannerStore from "../../features/planner";
 
 import "./style.scss";
 
-const PlannerCard = () => {
+const PlannerCard = memo(() => {
   const [calendarModalType, setCalendarModalType] = useState(null);
   const [activeFilterDate, setActiveFilterDate] = useState(null);
   const [doneFilterDate, setDoneFilterDate] = useState(null);
@@ -258,6 +258,6 @@ const PlannerCard = () => {
       )}
     </section>
   );
-};
+});
 
 export default PlannerCard

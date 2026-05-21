@@ -1,8 +1,9 @@
+import { memo } from "react";
 import timerStore, { durations, formatDuration, sounds, useTimerCard } from "../../features/timer";
 
 import "./style.scss";
 
-const TimerCard = () => {
+const TimerCard = memo( () => {
   const {
     start,
     stop,
@@ -218,6 +219,6 @@ const TimerCard = () => {
       )}
     </div>
   );
-};
+});
 
 export default TimerCard;

@@ -1,8 +1,9 @@
+import { memo } from "react";
 import ageCalculatorStore from "../../features/age-calculator";
 
 import "./style.scss";
 
-const AgeCalculatorCard = () => {
+const AgeCalculatorCard = memo(() => {
   const { year, month, day, nextBirthday, totals, setAge } = ageCalculatorStore();
   const hasResult = Boolean(nextBirthday);
   const today = new Date();
@@ -92,7 +93,7 @@ const AgeCalculatorCard = () => {
       </div>
     </section>
   );
-};
+});
 
 export default AgeCalculatorCard;
 
