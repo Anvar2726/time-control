@@ -1,263 +1,315 @@
-import { memo, useState } from "react";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
-import plannerStore from "../../features/planner";
+import { memo, useMemo, useState } from "react";
 
-import "./style.scss";
+import usePlannerStore, { toDateKey } from "../../features/planner";
+import styles from "./style.module.scss";
 
-const PlannerCard = memo(() => {
-  const [calendarModalType, setCalendarModalType] = useState(null);
-  const [activeFilterDate, setActiveFilterDate] = useState(null);
-  const [doneFilterDate, setDoneFilterDate] = useState(null);
-  const {
-    calendarValue,
-    setCalendarValue,
-    sumbitTask,
-    tasks,
-    deleteTask,
-    doneTask,
-    editTask,
-    selectedTask,
-  } = plannerStore();
+const dayFormatter = new Intl.DateTimeFormat("en-US", { weekday: "long" });
 
-  const isSameDate = (firstDate, secondDate) =>
-    firstDate.toDateString() === secondDate.toDateString();
-  const dailyTasks = tasks.filter((task) => isSameDate(task.date, calendarValue));
-  const activeTasks = tasks.filter(
-    (task) =>
-      !task.completed &&
-      (!activeFilterDate || isSameDate(task.date, activeFilterDate))
-  );
-  const doneTasks = tasks.filter(
-    (task) =>
-      task.completed && (!doneFilterDate || isSameDate(task.date, doneFilterDate))
-  );
-  const formatLongDate = (date) => date.toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "short",
-    day: "numeric",
+const dateFormatter = new Intl.DateTimeFormat("en-US", {
+  day: "numeric",
+  month: "long",
+});
+const shortDateFormatter = new Intl.DateTimeFormat("en-US", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+});
+
+const pad = (value) => String(value).padStart(2, "0");
+
+const toInputDate = (date) =>
+  `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+
+const fromInputDate = (value) => {
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(year, month - 1, day);
+};
+
+const getBoardDays = (startDate) =>
+  Array.from({ length: 4 }, (_, index) => {
+    const date = new Date(startDate);
+    date.setDate(date.getDate() + index);
+    date.setHours(0, 0, 0, 0);
+    return date;
   });
-  const selectedDate = formatLongDate(calendarValue);
-  const activeSelectedDate = activeFilterDate
-    ? formatLongDate(activeFilterDate)
-    : "All dates";
-  const doneSelectedDate = doneFilterDate ? formatLongDate(doneFilterDate) : "All dates";
-  const modalDate =
-    calendarModalType === "done"
-      ? doneFilterDate || new Date()
-      : activeFilterDate || new Date();
-  const modalSelectedDate =
-    calendarModalType === "done" ? doneSelectedDate : activeSelectedDate;
-  const formatTaskDate = (date) =>
-    date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
+
+const isToday = (date) => toDateKey(date) === toDateKey(new Date());
+
+const TaskForm = memo(({ date, initialValue = "", mode = "add", onCancel, onSubmit }) => {
+  const [title, setTitle] = useState(initialValue);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const cleanTitle = title.trim();
+    if (!cleanTitle) return;
+
+    onSubmit(cleanTitle, date);
+    setTitle("");
+  };
 
   return (
-    <section className="planner">
-      <aside className="planner__calendar-panel">
-        <div className="planner__header">
+    <form className={styles.taskForm} onSubmit={handleSubmit}>
+      <input
+        autoFocus
+        value={title}
+        onChange={(event) => setTitle(event.target.value)}
+        placeholder="Task name"
+        aria-label="Task name"
+      />
+      <div className={styles.formActions}>
+        {onCancel && (
+          <button type="button" className={styles.ghostButton} onClick={onCancel}>
+            Cancel
+          </button>
+        )}
+        <button type="submit" className={styles.primaryButton}>
+          {mode === "edit" ? "Save" : "Add"}
+        </button>
+      </div>
+    </form>
+  );
+});
+
+const TaskCard = memo(({ task, onDelete, onEdit, onToggle }) => (
+  <article className={`${styles.taskCard} ${task.completed ? styles.taskCardDone : ""}`}>
+    <button
+      type="button"
+      className={styles.taskCheck}
+      aria-label={task.completed ? "Mark task active" : "Mark task complete"}
+      onClick={() => onToggle(task.id)}
+    >
+      {task.completed ? "X" : ""}
+    </button>
+
+    <div className={styles.taskBody}>
+      <h3>{task.title || task.name}</h3>
+      <p>{shortDateFormatter.format(task.date)}</p>
+    </div>
+
+    <div className={styles.taskActions}>
+      <button type="button" onClick={() => onEdit(task)} aria-label="Edit task">
+        Edit
+      </button>
+      <button type="button" onClick={() => onDelete(task.id)} aria-label="Delete task">
+        Delete
+      </button>
+    </div>
+  </article>
+));
+
+const EmptyState = memo(({ onAdd }) => (
+  <div className={styles.emptyState}>
+    <strong>No tasks for this day</strong>
+    <button type="button" onClick={onAdd}>
+      Add a new task
+    </button>
+  </div>
+));
+
+const PlannerColumn = memo(
+  ({
+    date,
+    editingTask,
+    isAdding,
+    tasks,
+    onAddClick,
+    onCancelAdd,
+    onCancelEdit,
+    onCreate,
+    onDelete,
+    onEdit,
+    onSaveEdit,
+    onToggle,
+  }) => {
+    const dateIsToday = isToday(date);
+
+    return (
+      <section className={`${styles.dayColumn} ${dateIsToday ? styles.dayColumnToday : ""}`}>
+        <header className={styles.dayHeader}>
           <div>
-            <span>Planner</span>
-            <h2>Daily tasks</h2>
+            <p>{dayFormatter.format(date).toUpperCase()}</p>
+            <h2>{dateFormatter.format(date).toUpperCase()}</h2>
           </div>
-        </div>
+          {dateIsToday && <span>TODAY</span>}
+        </header>
 
-        <Calendar
-          className="planner__calendar"
-          onChange={setCalendarValue}
-          value={calendarValue}
-        />
+        <div className={styles.columnTasks}>
+          {isAdding && <TaskForm date={date} onCancel={onCancelAdd} onSubmit={onCreate} />}
 
-        <div className="planner__summary">
-          <span>Selected date</span>
-          <strong>{selectedDate}</strong>
-          <p>{dailyTasks.length} task on this date</p>
-        </div>
-
-        <div className="planner__daily-list">
-          {dailyTasks.length === 0 && (
-            <div className="planner__empty">No tasks planned for this date.</div>
+          {tasks.map((task) =>
+            editingTask?.id === task.id ? (
+              <TaskForm
+                key={task.id}
+                date={task.date}
+                initialValue={task.title || task.name}
+                mode="edit"
+                onCancel={onCancelEdit}
+                onSubmit={(title) => onSaveEdit(task.id, { title })}
+              />
+            ) : (
+              <TaskCard
+                key={task.id}
+                task={task}
+                onDelete={onDelete}
+                onEdit={onEdit}
+                onToggle={onToggle}
+              />
+            ),
           )}
-
-          {dailyTasks.map((task) => (
-            <article
-              key={task.id}
-              className={`planner__daily-item${
-                task.completed ? " planner__daily-item--done" : ""
-              }`}
-            >
-              <span>{task.completed ? "Done" : "Active"}</span>
-              <h3>{task.name}</h3>
-            </article>
-          ))}
+          <EmptyState onAdd={() => onAddClick(date)} />
         </div>
-      </aside>
+      </section>
+    );
+  }
+);
 
-      <div className="planner__task-panel">
-        <form className="planner__form" onSubmit={sumbitTask}>
-          <label htmlFor="taskName">
-            <span>{selectedTask ? "Update task" : "New task"}</span>
+const PlannerCard = memo(() => {
+  const [activeTab, setActiveTab] = useState("daily");
+  const [addingDateKey, setAddingDateKey] = useState(null);
+  const [editingTask, setEditingTask] = useState(null);
+  const {
+    addTask,
+    deleteTask,
+    moveViewDate,
+    setViewDate,
+    tasks,
+    toggleTask,
+    updateTask,
+    viewDate,
+  } = usePlannerStore();
+
+  const boardDays = useMemo(() => getBoardDays(viewDate), [viewDate]);
+  const tasksByDate = useMemo(
+    () =>
+      tasks.reduce((groupedTasks, task) => {
+        const dateKey = toDateKey(task.date);
+        return {
+          ...groupedTasks,
+          [dateKey]: [...(groupedTasks[dateKey] || []), task],
+        };
+      }, {}),
+    [tasks]
+  );
+  
+  const sortedTasks = useMemo(
+    () => [...tasks].sort((first, second) => second.date - first.date),
+    [tasks]
+  );
+
+  const openAddForm = (date) => {
+    setEditingTask(null);
+    setAddingDateKey(toDateKey(date));
+  };
+
+  const handleCreateTask = (title, date) => {
+    addTask({ title, date });
+    setAddingDateKey(null);
+  };
+
+  const handleEditTask = (task) => {
+    setAddingDateKey(null);
+    setEditingTask(task);
+    setActiveTab("daily");
+    setViewDate(task.date);
+  };
+
+  const handleSaveEdit = (id, updates) => {
+    updateTask(id, updates);
+    setEditingTask(null);
+  };
+
+  return (
+    <section className={styles.planner} aria-label="Daily planner">
+      <div className={styles.toolbar}>
+        <div className={styles.tabs} role="tablist" aria-label="Planner tabs">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "daily"}
+            className={activeTab === "daily" ? styles.activeTab : ""}
+            onClick={() => setActiveTab("daily")}
+          >
+            Daily Planner
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "dump"}
+            className={activeTab === "dump" ? styles.activeTab : ""}
+            onClick={() => setActiveTab("dump")}
+          >
+            Task Dump
+          </button>
+        </div>
+
+        <div className={styles.dateTools}>
+          <button type="button" aria-label="Previous day" onClick={() => moveViewDate(-1)}>
+            &lt;
+          </button>
+          <label>
+            <span>Date</span>
             <input
-              required
-              type="text"
-              name="taskName"
-              id="taskName"
-              placeholder="Task name"
+              type="date"
+              value={toInputDate(viewDate)}
+              onChange={(event) => setViewDate(fromInputDate(event.target.value))}
             />
           </label>
-          <button type="submit">{selectedTask ? "Save task" : "Add task"}</button>
-        </form>
-
-        <div className="planner__section-head">
-          <div>
-            <span>Queue</span>
-            <h2>Active tasks</h2>
-            <p>{activeSelectedDate}</p>
-          </div>
-          <div className="planner__section-actions">
-            {activeFilterDate && (
-              <button
-                className="planner__date-button"
-                type="button"
-                onClick={() => setActiveFilterDate(null)}
-              >
-                All dates
-              </button>
-            )}
-            <button
-              className="planner__date-button"
-              type="button"
-              onClick={() => setCalendarModalType("active")}
-            >
-              Choose date
-            </button>
-            <strong>{activeTasks.length}</strong>
-          </div>
-        </div>
-
-        <div className="planner__task-list">
-          {activeTasks.length === 0 && (
-            <div className="planner__empty">No active tasks for this date.</div>
-          )}
-
-          {activeTasks.map((task) => (
-            <article key={task.id} className="planner__task-item">
-              <div className="planner__task-content">
-                <h3>{task.name}</h3>
-                <p>{formatTaskDate(task.date)}</p>
-              </div>
-              <div className="planner__task-actions">
-                <button type="button" onClick={() => doneTask(task.id)}>
-                  Done
-                </button>
-                <button type="button" onClick={() => editTask(task.id)}>
-                  Edit
-                </button>
-                <button
-                  className="planner__task-delete"
-                  type="button"
-                  onClick={() => deleteTask(task.id)}
-                >
-                  Delete
-                </button>
-              </div>
-            </article>
-          ))}
-        </div>
-
-        <div className="planner__section-head planner__section-head--done">
-          <div>
-            <span>Archive</span>
-            <h2>Done tasks</h2>
-            <p>{doneSelectedDate}</p>
-          </div>
-          <div className="planner__section-actions">
-            {doneFilterDate && (
-              <button
-                className="planner__date-button"
-                type="button"
-                onClick={() => setDoneFilterDate(null)}
-              >
-                All dates
-              </button>
-            )}
-            <button
-              className="planner__date-button"
-              type="button"
-              onClick={() => setCalendarModalType("done")}
-            >
-              Choose date
-            </button>
-            <strong>{doneTasks.length}</strong>
-          </div>
-        </div>
-
-        <div className="planner__done-list">
-          {doneTasks.length === 0 && (
-            <div className="planner__empty">No completed tasks for this date.</div>
-          )}
-
-          {doneTasks.map((task) => (
-            <article
-              key={task.id}
-              className="planner__task-item planner__task-item--done"
-              onClick={() => doneTask(task.id)}
-            >
-              <div className="planner__task-content">
-                <h3>{task.name}</h3>
-                <p>{formatTaskDate(task.date)}</p>
-              </div>
-              <button
-                className="planner__task-delete"
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  deleteTask(task.id);
-                }}
-              >
-                Delete
-              </button>
-            </article>
-          ))}
+          <button type="button" aria-label="Next day" onClick={() => moveViewDate(1)}>
+            &gt;
+          </button>
         </div>
       </div>
 
-      {calendarModalType && (
-        <div
-          className="planner__modal-backdrop"
-          onClick={() => setCalendarModalType(null)}
-        >
-          <div className="planner__modal" onClick={(e) => e.stopPropagation()}>
-            <div className="planner__modal-head">
-              <div>
-                <span>Select date</span>
-                <h2>{modalSelectedDate}</h2>
+      {activeTab === "daily" ? (
+        <div className={styles.board}>
+          {boardDays.map((date) => {
+            const dateKey = toDateKey(date);
+            const dayTasks = tasksByDate[dateKey] || [];
+
+            return (
+              <div className={styles.columnWrap} key={dateKey}>
+                <PlannerColumn
+                  date={date}
+                  editingTask={editingTask}
+                  isAdding={addingDateKey === dateKey}
+                  tasks={dayTasks}
+                  onAddClick={openAddForm}
+                  onCancelAdd={() => setAddingDateKey(null)}
+                  onCancelEdit={() => setEditingTask(null)}
+                  onCreate={handleCreateTask}
+                  onDelete={deleteTask}
+                  onEdit={handleEditTask}
+                  onSaveEdit={handleSaveEdit}
+                  onToggle={toggleTask}
+                />
               </div>
-              <button type="button" onClick={() => setCalendarModalType(null)}>
-                x
+            );
+          })}
+        </div>
+      ) : (
+        <div className={styles.dumpPanel}>
+          {sortedTasks.length === 0 ? (
+            <div className={styles.emptyState}>
+              <strong>No tasks yet</strong>
+              <button type="button" onClick={() => setActiveTab("daily")}>
+                Add a new task
               </button>
             </div>
-
-            <Calendar
-              className="planner__calendar"
-              onChange={(value) => {
-                if (calendarModalType === "done") {
-                  setDoneFilterDate(value);
-                } else {
-                  setActiveFilterDate(value);
-                }
-                setCalendarModalType(null);
-              }}
-              value={modalDate}
-            />
-          </div>
+          ) : (
+            sortedTasks.map((task) => (
+              <TaskCard
+                key={task.id}
+                task={task}
+                onDelete={deleteTask}
+                onEdit={handleEditTask}
+                onToggle={toggleTask}
+              />
+            ))
+          )}
         </div>
       )}
     </section>
   );
 });
 
-export default PlannerCard
+export default PlannerCard;

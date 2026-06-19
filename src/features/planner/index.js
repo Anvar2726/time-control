@@ -3,6 +3,27 @@ import { create } from "zustand";
 
 const PLANNER_STORAGE_KEY = "time-control-planner-tasks";
 
+const normalizeDate = (date) => {
+  const normalized = new Date(date);
+  normalized.setHours(0, 0, 0, 0);
+  return normalized;
+};
+
+const pad = (value) => String(value).padStart(2, "0");
+
+export const toDateKey = (date) => {
+  const normalized = normalizeDate(date);
+  return `${normalized.getFullYear()}-${pad(normalized.getMonth() + 1)}-${pad(
+    normalized.getDate()
+  )}`;
+};
+
+const parseTask = (task) => ({
+  ...task,
+  date: normalizeDate(task.date || new Date()),
+  completed: Boolean(task.completed),
+});
+
 const getStoredTasks = () => {
   if (typeof window === "undefined") return [];
 
@@ -10,10 +31,7 @@ const getStoredTasks = () => {
     const tasks = JSON.parse(window.localStorage.getItem(PLANNER_STORAGE_KEY) || "[]");
     if (!Array.isArray(tasks)) return [];
 
-    return tasks.map((task) => ({
-      ...task,
-      date: new Date(task.date),
-    }));
+    return tasks.map(parseTask);
   } catch {
     return [];
   }
@@ -24,71 +42,62 @@ const setStoredTasks = (tasks) => {
   window.localStorage.setItem(PLANNER_STORAGE_KEY, JSON.stringify(tasks));
 };
 
-const plannerStore = create((set, get) => ({
+const updateStoredTasks = (set, updater) => {
+  set((state) => {
+    const tasks = updater(state.tasks);
+    setStoredTasks(tasks);
+    return { tasks };
+  });
+};
+
+const usePlannerStore = create((set) => ({
   tasks: getStoredTasks(),
-  calendarValue: new Date(),
-  tasksForm: null,
-  selectedTask: null,
-  setCalendarValue: (value) => set(() => ({ calendarValue: value })),
-  addTask: (task) =>
+  viewDate: normalizeDate(new Date()),
+
+  setViewDate: (date) => set({ viewDate: normalizeDate(date) }),
+
+  moveViewDate: (days) =>
     set((state) => {
-      const tasks = [...state.tasks, task];
-      setStoredTasks(tasks);
-      return { tasks };
+      const nextDate = normalizeDate(state.viewDate);
+      nextDate.setDate(nextDate.getDate() + days);
+      return { viewDate: nextDate };
     }),
-  sumbitTask: (e) => {
-    const { calendarValue, addTask, selectedTask, tasks, setCalendarValue } = get();
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    set(() => ({ tasksForm: e.target }));
-    const tasksObj = {
-      id: v4(),
-      name: formData.get("taskName"),
-      date: calendarValue,
-      completed: false,
-    };
-    if (selectedTask) {
-        const updatedTasks = tasks.map((task) => {
-            if (task.id === selectedTask) {
-                return { ...task, name: tasksObj.name, date: tasksObj.date };
+
+  addTask: ({ title, date }) =>
+    updateStoredTasks(set, (tasks) => [
+      ...tasks,
+      {
+        id: v4(),
+        title: title.trim(),
+        date: normalizeDate(date),
+        completed: false,
+        createdAt: new Date().toISOString(),
+      },
+    ]),
+
+  updateTask: (id, updates) =>
+    updateStoredTasks(set, (tasks) =>
+      tasks.map((task) =>
+        task.id === id
+          ? {
+              ...task,
+              ...updates,
+              title: updates.title ? updates.title.trim() : task.title,
+              date: updates.date ? normalizeDate(updates.date) : task.date,
             }
-            return task;
-        });
-        setStoredTasks(updatedTasks);
-        set(() => ({ tasks: updatedTasks, selectedTask: null }));
-    }else{
-        addTask(tasksObj);
-        set(() => ({ selectedTask: null }));
-    }
-    setCalendarValue(new Date());
-    e.target.reset();
-  },
-  doneTask: (id) => {
-    const { tasks } = get();
-    const updatedTasks = tasks.map((task) => {
-      if (task.id === id) {
-        return { ...task, completed: !task.completed };
-      }
-      return task;
-    });
-    setStoredTasks(updatedTasks);
-    set(() => ({ tasks: updatedTasks }));
-  },
-  deleteTask: (id) => {
-    const { tasks } = get();
-    const filteredTasks = tasks.filter((task) => task.id !== id);
-    setStoredTasks(filteredTasks);
-    set(() => ({ tasks: filteredTasks }));
-  },
-  editTask: (id) => {
-    const { tasks, tasksForm, setCalendarValue } = get();
-    const foundedTask = tasks.find((task) => task.id === id);
-    if (foundedTask) {
-        tasksForm.taskName.value = foundedTask.name;
-        set(() => ({ selectedTask: id }));
-      setCalendarValue(foundedTask.date);
-    }
-  },
+          : task
+      )
+    ),
+
+  toggleTask: (id) =>
+    updateStoredTasks(set, (tasks) =>
+      tasks.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    ),
+
+  deleteTask: (id) =>
+    updateStoredTasks(set, (tasks) => tasks.filter((task) => task.id !== id)),
 }));
 
-export default plannerStore;
+export default usePlannerStore;

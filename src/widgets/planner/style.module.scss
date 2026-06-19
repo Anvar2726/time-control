@@ -1,0 +1,491 @@
+@use "../../consts/colors/style.scss" as *;
+
+.planner {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: calc(100vh - 116px);
+
+  button,
+  input {
+    font: inherit;
+  }
+
+  button {
+    cursor: pointer;
+  }
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.tabs,
+.dateTools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tabs {
+  padding: 5px;
+  border: 1px solid $border;
+  border-radius: 8px;
+  background: $bg-surface;
+
+  button {
+    min-height: 38px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: transparent;
+    color: $text-muted;
+    padding: 0 14px;
+    transition: background $transition, border-color $transition, color $transition;
+
+    &:hover,
+    &:focus-visible {
+      color: $text-primary;
+      background: $bg-elevated;
+      outline: 0;
+    }
+  }
+}
+
+.activeTab {
+  color: $accent !important;
+  border-color: $accent !important;
+  background: $accent-soft !important;
+}
+
+.dateTools {
+  justify-content: flex-end;
+
+  button {
+    width: 38px;
+    height: 38px;
+    border: 1px solid $border;
+    border-radius: 8px;
+    background: $bg-surface;
+    color: $text-primary;
+    transition: background $transition, border-color $transition, color $transition;
+
+    &:hover,
+    &:focus-visible {
+      border-color: $accent;
+      background: $accent-soft;
+      color: $accent;
+      outline: 0;
+    }
+  }
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 38px;
+    border: 1px solid $border;
+    border-radius: 8px;
+    background: $bg-surface;
+    padding: 0 10px;
+
+    span {
+      color: $text-muted;
+      font-family: "Space Mono", monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+  }
+
+  input {
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: $text-primary;
+    color-scheme: dark;
+  }
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  min-height: 560px;
+}
+
+.columnWrap {
+  min-width: 0;
+}
+
+.dayColumn {
+  height: min(64vh, 640px);
+  min-height: 460px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid $border;
+  border-radius: 12px;
+  background: $bg-surface;
+  transition: border-color $transition, box-shadow $transition, transform $transition;
+
+  &:hover {
+    border-color: $text-dim;
+    transform: translateY(-1px);
+  }
+}
+
+.dayColumnToday {
+  border-color: $accent;
+  box-shadow: 0 0 0 3px $accent-soft;
+}
+
+.dayHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 18px 14px;
+  border-bottom: 1px solid $border;
+  background: $bg-elevated;
+
+  p {
+    color: $text-muted;
+    font-family: "Space Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+
+  h2 {
+    margin-top: 5px;
+    color: $text-primary;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  span {
+    flex-shrink: 0;
+    border: 1px solid $accent;
+    border-radius: 999px;
+    background: $accent-soft;
+    color: $accent;
+    padding: 5px 8px;
+    font-family: "Space Mono", monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+}
+
+.columnTasks {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  padding: 14px;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $border;
+    border-radius: 999px;
+  }
+}
+
+.emptyState {
+  min-height: 170px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 12px;
+  border: 1px dashed $border;
+  border-radius: 10px;
+  background: $bg-elevated;
+  text-align: center;
+
+  strong {
+    color: $text-muted;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  button {
+    min-height: 36px;
+    border: 1px solid $accent;
+    border-radius: 8px;
+    background: $accent-soft;
+    color: $accent;
+    padding: 0 12px;
+    transition: background $transition, transform $transition;
+
+    &:hover,
+    &:focus-visible {
+      background: $bg-surface;
+      transform: translateY(-1px);
+      outline: 0;
+    }
+  }
+}
+
+.taskCard {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid $border;
+  border-radius: 10px;
+  background: $bg-elevated;
+  transition: border-color $transition, background $transition;
+
+  &:hover {
+    border-color: $accent;
+    background: $bg-surface;
+  }
+}
+
+.taskCardDone {
+  opacity: 0.72;
+
+  h3 {
+    color: $text-muted;
+    text-decoration: line-through;
+  }
+}
+
+.taskCheck {
+  width: 26px;
+  height: 26px;
+  border: 1px solid $border;
+  border-radius: 8px;
+  background: $bg-surface;
+  color: $accent;
+  font-size: 13px;
+  line-height: 1;
+  transition: border-color $transition, background $transition;
+
+  &:hover,
+  &:focus-visible {
+    border-color: $accent;
+    background: $accent-soft;
+    outline: 0;
+  }
+}
+
+.taskBody {
+  min-width: 0;
+
+  h3 {
+    color: $text-primary;
+    font-size: 15px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+  }
+
+  p {
+    margin-top: 5px;
+    color: $text-muted;
+    font-family: "Space Mono", monospace;
+    font-size: 11px;
+  }
+}
+
+.taskActions {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+
+  button {
+    min-height: 30px;
+    border: 1px solid $border;
+    border-radius: 7px;
+    background: $bg-surface;
+    color: $text-muted;
+    padding: 0 9px;
+    font-size: 12px;
+    transition: background $transition, border-color $transition, color $transition;
+
+    &:hover,
+    &:focus-visible {
+      border-color: $accent;
+      background: $accent-soft;
+      color: $accent;
+      outline: 0;
+    }
+  }
+}
+
+.taskForm {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid $accent;
+  border-radius: 10px;
+  background: $accent-soft;
+
+  input {
+    width: 100%;
+    min-height: 40px;
+    border: 1px solid $border;
+    border-radius: 8px;
+    outline: 0;
+    background: $bg-surface;
+    color: $text-primary;
+    padding: 0 12px;
+
+    &::placeholder {
+      color: $text-dim;
+    }
+
+    &:focus {
+      border-color: $accent;
+      box-shadow: 0 0 0 3px $accent-soft;
+    }
+  }
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.primaryButton,
+.ghostButton {
+  min-height: 34px;
+  border-radius: 8px;
+  padding: 0 12px;
+  transition: transform $transition, border-color $transition, background $transition, color $transition;
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-1px);
+    outline: 0;
+  }
+}
+
+.primaryButton {
+  border: 1px solid $accent;
+  background: $accent;
+  color: $bg-base;
+}
+
+.ghostButton {
+  border: 1px solid $border;
+  background: $bg-surface;
+  color: $text-muted;
+
+  &:hover,
+  &:focus-visible {
+    border-color: $accent;
+    color: $accent;
+  }
+}
+
+.dumpPanel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid $border;
+  border-radius: 12px;
+  background: $bg-surface;
+}
+
+@media (max-width: 1023px) {
+  .board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .planner {
+    min-height: auto;
+    gap: 14px;
+  }
+
+  .toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .tabs {
+    width: 100%;
+
+    button {
+      flex: 1;
+      padding: 0 8px;
+    }
+  }
+
+  .dateTools {
+    width: 100%;
+
+    label {
+      flex: 1;
+      min-width: 0;
+    }
+
+    input {
+      width: 100%;
+      min-width: 0;
+    }
+  }
+
+  .board {
+    display: flex;
+    gap: 12px;
+    min-height: auto;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 8px;
+
+    &::-webkit-scrollbar {
+      height: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: $border;
+      border-radius: 999px;
+    }
+  }
+
+  .columnWrap {
+    flex: 0 0 min(100%, 360px);
+    scroll-snap-align: start;
+  }
+
+  .dayColumn {
+    min-height: 520px;
+    height: calc(100dvh - 230px);
+  }
+
+  .dayHeader {
+    padding: 15px;
+
+    h2 {
+      font-size: 16px;
+    }
+  }
+
+  .columnTasks {
+    padding: 12px;
+  }
+
+  .dumpPanel {
+    grid-template-columns: 1fr;
+    padding: 12px;
+  }
+}
